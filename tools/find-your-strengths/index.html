@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>強みレーダーチャート — 自分の強みを見つけよう</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
+      background: #0f0f0f;
+      color: #f0f0f0;
+      min-height: 100vh;
+      padding: 3rem 2rem 5rem;
+    }
+
+    .nav {
+      max-width: 760px;
+      margin: 0 auto 3rem;
+    }
+
+    .nav a {
+      font-size: 0.8rem;
+      color: #444;
+      text-decoration: none;
+      letter-spacing: 0.05em;
+    }
+
+    .nav a:hover { color: #666; }
+
+    h1 {
+      font-size: 0.85rem;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      color: #555;
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .layout {
+      max-width: 760px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2.5rem;
+    }
+
+    /* ---- チャート ---- */
+    .chart-wrap {
+      position: relative;
+      width: min(420px, 100%);
+      aspect-ratio: 1;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ---- 入力グリッド ---- */
+    .inputs {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .input-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: #141414;
+      border: 1px solid #1e1e1e;
+      border-radius: 8px;
+      padding: 0.6rem 0.9rem;
+      transition: border-color 0.15s;
+    }
+
+    .input-row:focus-within {
+      border-color: #333;
+    }
+
+    .input-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .input-label {
+      font-size: 0.82rem;
+      color: #888;
+      flex: 1;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .input-row input[type="range"] {
+      width: 72px;
+      accent-color: #f0f0f0;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .input-score {
+      font-size: 0.9rem;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      color: #ccc;
+      width: 1.4em;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    /* ---- ボタン ---- */
+    .actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    button {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 6px;
+      color: #888;
+      font-size: 0.82rem;
+      padding: 0.45rem 1rem;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    button:hover {
+      border-color: #444;
+      color: #ccc;
+    }
+
+    /* ---- 使い方 ---- */
+    .how-to {
+      width: 100%;
+      border-top: 1px solid #1a1a1a;
+      padding-top: 2rem;
+    }
+
+    .how-to h2 {
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      color: #3a3a3a;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+    }
+
+    .how-to ol {
+      list-style: none;
+      counter-reset: step;
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    .how-to ol li {
+      counter-increment: step;
+      display: flex;
+      gap: 0.9rem;
+      font-size: 0.85rem;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    .how-to ol li::before {
+      content: counter(step);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #333;
+      background: #1a1a1a;
+      border-radius: 50%;
+      width: 1.4em;
+      height: 1.4em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 0.1em;
+    }
+
+    .book-ref {
+      margin-top: 1.5rem;
+      font-size: 0.75rem;
+      color: #2e2e2e;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="nav">
+    <a href="../../index.html">← ツール一覧へ</a>
+  </div>
+
+  <h1>強みレーダーチャート — 自分の強みを見つけよう</h1>
+
+  <div class="layout">
+
+    <div class="chart-wrap">
+      <canvas id="radar" width="420" height="420"></canvas>
+    </div>
+
+    <div class="inputs" id="inputs"></div>
+
+    <div class="actions">
+      <button id="btn-reset">リセット</button>
+      <button id="btn-save">画像として保存</button>
+    </div>
+
+    <div class="how-to">
+      <h2>使い方</h2>
+      <ol>
+        <li>本を読みながら、または読み終えた後に、各知能の自己評価をスライダーで入力する（1〜10）。</li>
+        <li>レーダーチャートがリアルタイムで更新され、自分の強みのパターンが視覚化される。</li>
+        <li>スコアが高い知能が自分の強み。突出した頂点に注目しよう。</li>
+        <li>「画像として保存」でチャートをPNGで書き出せる。</li>
+      </ol>
+      <p class="book-ref">
+        「自分の強みを見つけよう」より — ハワード・ガードナーの多重知能理論に基づく8つの知能。誰もが独自の知能プロファイルを持つ。
+      </p>
+    </div>
+
+  </div>
+
+  <script>
+    const STRENGTHS = [
+      { key: "logical",    label: "論理・数学的知能", color: "#6ee7b7" },
+      { key: "linguistic", label: "言語的知能",       color: "#93c5fd" },
+      { key: "musical",    label: "音楽的知能",       color: "#c4b5fd" },
+      { key: "spatial",    label: "空間的知能",       color: "#fca5a5" },
+      { key: "naturalist", label: "博物的知能",       color: "#86efac" },
+      { key: "bodily",     label: "身体・運動的知能", color: "#fcd34d" },
+      { key: "interpersonal", label: "対人的知能",   color: "#f9a8d4" },
+      { key: "intrapersonal", label: "内省的知能",   color: "#7dd3fc" },
+    ];
+
+    const STORAGE_KEY = "find-your-strengths-scores";
+
+    // --- state ---
+    let scores = loadScores();
+
+    function loadScores() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) return JSON.parse(raw);
+      } catch {}
+      return Object.fromEntries(STRENGTHS.map(s => [s.key, 5]));
+    }
+
+    function saveScores() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(scores));
+    }
+
+    // --- build inputs ---
+    const inputsEl = document.getElementById("inputs");
+
+    STRENGTHS.forEach(s => {
+      const row = document.createElement("div");
+      row.className = "input-row";
+
+      const dot = document.createElement("div");
+      dot.className = "input-dot";
+      dot.style.background = s.color;
+
+      const label = document.createElement("div");
+      label.className = "input-label";
+      label.textContent = s.label;
+
+      const range = document.createElement("input");
+      range.type = "range";
+      range.min = 1;
+      range.max = 10;
+      range.step = 1;
+      range.value = scores[s.key];
+      range.style.accentColor = s.color;
+
+      const scoreEl = document.createElement("div");
+      scoreEl.className = "input-score";
+      scoreEl.textContent = scores[s.key];
+
+      range.addEventListener("input", () => {
+        scores[s.key] = Number(range.value);
+        scoreEl.textContent = range.value;
+        saveScores();
+        draw();
+      });
+
+      row.appendChild(dot);
+      row.appendChild(label);
+      row.appendChild(range);
+      row.appendChild(scoreEl);
+      inputsEl.appendChild(row);
+    });
+
+    // --- radar chart ---
+    const canvas = document.getElementById("radar");
+    const ctx = canvas.getContext("2d");
+    const W = canvas.width;
+    const H = canvas.height;
+    const CX = W / 2;
+    const CY = H / 2;
+    const R = W * 0.38;
+    const N = STRENGTHS.length;
+
+    function angle(i) {
+      return (Math.PI * 2 * i) / N - Math.PI / 2;
+    }
+
+    function point(i, value, maxVal = 10) {
+      const r = R * (value / maxVal);
+      const a = angle(i);
+      return { x: CX + r * Math.cos(a), y: CY + r * Math.sin(a) };
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+
+      const levels = 5;
+
+      // グリッド
+      for (let lv = 1; lv <= levels; lv++) {
+        ctx.beginPath();
+        for (let i = 0; i < N; i++) {
+          const p = point(i, (lv / levels) * 10);
+          i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
+        }
+        ctx.closePath();
+        ctx.strokeStyle = lv === levels ? "#2a2a2a" : "#1e1e1e";
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+
+      // 軸
+      for (let i = 0; i < N; i++) {
+        const p = point(i, 10);
+        ctx.beginPath();
+        ctx.moveTo(CX, CY);
+        ctx.lineTo(p.x, p.y);
+        ctx.strokeStyle = "#1e1e1e";
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+
+      // データ塗り
+      ctx.beginPath();
+      STRENGTHS.forEach((s, i) => {
+        const p = point(i, scores[s.key]);
+        i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
+      });
+      ctx.closePath();
+      ctx.fillStyle = "rgba(240,240,240,0.07)";
+      ctx.fill();
+      ctx.strokeStyle = "rgba(240,240,240,0.5)";
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // 各頂点の色付きドット
+      STRENGTHS.forEach((s, i) => {
+        const p = point(i, scores[s.key]);
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+        ctx.fillStyle = s.color;
+        ctx.fill();
+      });
+
+      // ラベル
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      STRENGTHS.forEach((s, i) => {
+        const a = angle(i);
+        const labelR = R + 36;
+        const lx = CX + labelR * Math.cos(a);
+        const ly = CY + labelR * Math.sin(a);
+
+        const score = scores[s.key];
+        ctx.font = `bold 11px -apple-system, sans-serif`;
+        ctx.fillStyle = s.color;
+        ctx.fillText(score, lx, ly - 8);
+
+        ctx.font = `10px -apple-system, sans-serif`;
+        ctx.fillStyle = "#666";
+        // 長いラベルは2行に分割
+        const words = s.label.replace("・", "・\n");
+        const lines = words.split("\n");
+        lines.forEach((line, li) => {
+          ctx.fillText(line, lx, ly + 4 + li * 13);
+        });
+      });
+    }
+
+    draw();
+
+    // --- reset ---
+    document.getElementById("btn-reset").addEventListener("click", () => {
+      STRENGTHS.forEach(s => { scores[s.key] = 5; });
+      saveScores();
+      // スライダーとスコア表示を更新
+      inputsEl.querySelectorAll("input[type=range]").forEach((range, i) => {
+        range.value = 5;
+        range.nextSibling.textContent = 5;
+      });
+      draw();
+    });
+
+    // --- save as image ---
+    document.getElementById("btn-save").addEventListener("click", () => {
+      // 保存用に背景付きで描画
+      const saveCanvas = document.createElement("canvas");
+      saveCanvas.width = W;
+      saveCanvas.height = H;
+      const sc = saveCanvas.getContext("2d");
+      sc.fillStyle = "#0f0f0f";
+      sc.fillRect(0, 0, W, H);
+      sc.drawImage(canvas, 0, 0);
+
+      const a = document.createElement("a");
+      a.download = "strengths-radar.png";
+      a.href = saveCanvas.toDataURL("image/png");
+      a.click();
+    });
+  </script>
+</body>
+</html>

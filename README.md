@@ -12,6 +12,7 @@
 | ツール名 | 対象書籍 | 説明 | リンク |
 |---------|---------|------|-------|
 | 今日の残り時間カウントダウン | 1440分の使い方 | 就寝時刻を入力すると、残り時間をリアルタイムでカウントダウン | [tools/1440-minutes/](tools/1440-minutes/index.html) |
+| 強みレーダーチャート | 自分の強みを見つけよう | 8つの多重知能をスライダーで評価しレーダーチャートで可視化 | [tools/find-your-strengths/](tools/find-your-strengths/index.html) |
 
 ## ディレクトリ構成
 
@@ -19,9 +20,11 @@
 maximizing-reading/
 ├── README.md
 └── tools/
-    ├── 1440-minutes/      # 1440分の使い方
+    ├── 1440-minutes/          # 1440分の使い方
     │   └── index.html
-    └── <book-name>/       # 追加予定
+    ├── find-your-strengths/   # 自分の強みを見つけよう
+    │   └── index.html
+    └── <book-name>/           # 追加予定
         └── index.html
 ```
 
