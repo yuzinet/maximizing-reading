@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>1440分の使い方 - 今日の残り時間</title>
+  <title>今日の残り時間 — 1440分の使い方</title>
   <style>
     * {
       margin: 0;
@@ -19,53 +19,84 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 2rem;
+      padding: 3rem 2rem 4rem;
+    }
+
+    .nav {
+      width: 100%;
+      max-width: 560px;
+      margin-bottom: 3rem;
+    }
+
+    .nav a {
+      font-size: 0.8rem;
+      color: #444;
+      text-decoration: none;
+      letter-spacing: 0.05em;
+    }
+
+    .nav a:hover {
+      color: #666;
     }
 
     h1 {
-      font-size: 1rem;
+      font-size: 0.85rem;
       font-weight: 400;
       letter-spacing: 0.15em;
-      color: #888;
-      margin-bottom: 3rem;
+      color: #555;
+      margin-bottom: 2.5rem;
       text-align: center;
     }
 
-    .countdown {
+    /* ---- メイン: 残り分 ---- */
+    .main-display {
       text-align: center;
-      margin-bottom: 3rem;
+      margin-bottom: 1.25rem;
     }
 
-    .countdown-time {
-      font-size: clamp(3rem, 12vw, 7rem);
-      font-weight: 700;
-      letter-spacing: 0.05em;
+    .minutes-value {
+      font-size: clamp(5rem, 20vw, 10rem);
+      font-weight: 800;
       font-variant-numeric: tabular-nums;
       line-height: 1;
+      letter-spacing: -0.02em;
     }
 
-    .countdown-time.warning {
-      color: #f59e0b;
-    }
+    .minutes-value.warning { color: #f59e0b; }
+    .minutes-value.danger  { color: #ef4444; }
 
-    .countdown-time.danger {
-      color: #ef4444;
-    }
-
-    .countdown-label {
-      font-size: 0.85rem;
+    .minutes-unit {
+      font-size: 1.1rem;
+      font-weight: 400;
       color: #555;
-      margin-top: 0.75rem;
       letter-spacing: 0.1em;
+      margin-top: 0.4rem;
     }
 
+    /* ---- サブ: HH:MM:SS ---- */
+    .sub-display {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .hms-value {
+      font-size: clamp(1.4rem, 5vw, 2rem);
+      font-weight: 300;
+      font-variant-numeric: tabular-nums;
+      color: #444;
+      letter-spacing: 0.08em;
+    }
+
+    .hms-value.warning { color: #b97a0a; }
+    .hms-value.danger  { color: #b03030; }
+
+    /* ---- プログレスバー ---- */
     .progress-bar-wrap {
       width: min(500px, 100%);
-      height: 4px;
-      background: #222;
+      height: 3px;
+      background: #1e1e1e;
       border-radius: 2px;
-      margin: 2rem auto;
+      margin-bottom: 2.5rem;
       overflow: hidden;
     }
 
@@ -76,56 +107,52 @@
       transition: width 1s linear, background 1s;
     }
 
-    .progress-bar.warning {
-      background: #f59e0b;
-    }
+    .progress-bar.warning { background: #f59e0b; }
+    .progress-bar.danger  { background: #ef4444; }
 
-    .progress-bar.danger {
-      background: #ef4444;
-    }
-
+    /* ---- サブ統計 ---- */
     .stats {
       display: flex;
       gap: 2.5rem;
       justify-content: center;
-      margin-bottom: 3rem;
+      margin-bottom: 2.5rem;
       flex-wrap: wrap;
     }
 
-    .stat {
-      text-align: center;
-    }
+    .stat { text-align: center; }
 
     .stat-value {
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       font-weight: 600;
       font-variant-numeric: tabular-nums;
     }
 
     .stat-label {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       color: #555;
       margin-top: 0.25rem;
       letter-spacing: 0.08em;
     }
 
+    /* ---- 設定 ---- */
     .setting {
       display: flex;
       align-items: center;
       gap: 0.75rem;
       flex-wrap: wrap;
       justify-content: center;
+      margin-bottom: 1rem;
     }
 
     .setting label {
       font-size: 0.85rem;
-      color: #666;
+      color: #555;
       letter-spacing: 0.05em;
     }
 
     .setting input[type="time"] {
       background: #1a1a1a;
-      border: 1px solid #333;
+      border: 1px solid #2a2a2a;
       border-radius: 6px;
       color: #f0f0f0;
       font-size: 1rem;
@@ -135,16 +162,72 @@
     }
 
     .setting input[type="time"]:focus {
-      border-color: #555;
+      border-color: #444;
     }
 
+    /* ---- メッセージ ---- */
     .message {
-      margin-top: 2.5rem;
-      font-size: 0.85rem;
-      color: #444;
+      font-size: 0.82rem;
+      color: #3a3a3a;
       text-align: center;
       min-height: 1.2em;
       letter-spacing: 0.05em;
+      margin-bottom: 3rem;
+    }
+
+    /* ---- 使い方 ---- */
+    .how-to {
+      width: min(560px, 100%);
+      border-top: 1px solid #1a1a1a;
+      padding-top: 2rem;
+    }
+
+    .how-to h2 {
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      color: #3a3a3a;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+    }
+
+    .how-to ol {
+      list-style: none;
+      counter-reset: step;
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    .how-to ol li {
+      counter-increment: step;
+      display: flex;
+      gap: 0.9rem;
+      font-size: 0.85rem;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    .how-to ol li::before {
+      content: counter(step);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #333;
+      background: #1a1a1a;
+      border-radius: 50%;
+      width: 1.4em;
+      height: 1.4em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 0.1em;
+    }
+
+    .book-ref {
+      margin-top: 1.5rem;
+      font-size: 0.75rem;
+      color: #2e2e2e;
+      line-height: 1.6;
     }
 
     .done-message {
@@ -156,11 +239,19 @@
 </head>
 <body>
 
-  <h1>1440分の使い方 — 今日の残り時間</h1>
+  <div class="nav">
+    <a href="../../index.html">← ツール一覧へ</a>
+  </div>
 
-  <div class="countdown">
-    <div class="countdown-time" id="countdown">--:--:--</div>
-    <div class="countdown-label">就寝まで</div>
+  <h1>今日の残り時間 — 1440分の使い方</h1>
+
+  <div class="main-display">
+    <div class="minutes-value" id="minutes-left">--</div>
+    <div class="minutes-unit">分 残っている</div>
+  </div>
+
+  <div class="sub-display">
+    <div class="hms-value" id="countdown">--:--:--</div>
   </div>
 
   <div class="progress-bar-wrap">
@@ -168,10 +259,6 @@
   </div>
 
   <div class="stats">
-    <div class="stat">
-      <div class="stat-value" id="minutes-left">--</div>
-      <div class="stat-label">残り分</div>
-    </div>
     <div class="stat">
       <div class="stat-value" id="percent-left">--%</div>
       <div class="stat-label">残り割合</div>
@@ -189,16 +276,29 @@
 
   <div class="message" id="message"></div>
 
+  <div class="how-to">
+    <h2>使い方</h2>
+    <ol>
+      <li>右の「就寝時刻」を自分が寝る予定の時間に設定する。設定は自動で保存される。</li>
+      <li>大きく表示される数字が、就寝までの残り分数。この数字を常に意識する。</li>
+      <li>何かを始める前に「これに何分使うか」を決め、残り分から引き算する。無意識な時間消費をなくす。</li>
+      <li>残り時間が減るにつれて色が変わる。黄色で残り25%、赤で残り10%。</li>
+    </ol>
+    <p class="book-ref">
+      「1440分の使い方」より — 1日は誰にとっても平等に1440分。その使い方を意識するだけで生産性は劇的に変わる。
+    </p>
+  </div>
+
   <script>
     const DEFAULT_START = "06:00";
 
-    const countdownEl = document.getElementById("countdown");
-    const progressEl = document.getElementById("progress");
     const minutesLeftEl = document.getElementById("minutes-left");
+    const countdownEl   = document.getElementById("countdown");
+    const progressEl    = document.getElementById("progress");
     const percentLeftEl = document.getElementById("percent-left");
-    const elapsedEl = document.getElementById("elapsed");
-    const bedtimeInput = document.getElementById("bedtime");
-    const messageEl = document.getElementById("message");
+    const elapsedEl     = document.getElementById("elapsed");
+    const bedtimeInput  = document.getElementById("bedtime");
+    const messageEl     = document.getElementById("message");
 
     const STORAGE_KEY = "maximizing-reading-bedtime";
 
@@ -214,26 +314,25 @@
       return { h, m };
     }
 
-    function getStartMinutes() {
-      const { h, m } = parseTime(DEFAULT_START);
-      return h * 60 + m;
-    }
-
     function getBedtimeMinutes() {
       const val = bedtimeInput.value || "23:00";
       const { h, m } = parseTime(val);
-      let mins = h * 60 + m;
-      return mins;
+      return h * 60 + m;
+    }
+
+    function getStartMinutes() {
+      const { h, m } = parseTime(DEFAULT_START);
+      return h * 60 + m;
     }
 
     function pad(n) {
       return String(n).padStart(2, "0");
     }
 
-    function getMessages(remainingMins) {
+    function getMessage(remainingMins) {
       if (remainingMins > 240) return "まだ時間はある。何に使うか決めよう。";
       if (remainingMins > 120) return "残り2時間以上。集中できるラストスパート。";
-      if (remainingMins > 60)  return "残り1時間以上。今日一番大事なことに使おう。";
+      if (remainingMins > 60)  return "残り1時間超。今日一番大事なことに使おう。";
       if (remainingMins > 30)  return "残り30分超。ルーティンを終わらせよう。";
       if (remainingMins > 10)  return "あと少し。明日の準備を。";
       if (remainingMins > 0)   return "もう休む時間だ。";
@@ -245,27 +344,23 @@
       const nowMins = now.getHours() * 60 + now.getMinutes();
       const nowSecs = now.getSeconds();
 
-      const bedMins = getBedtimeMinutes();
+      const bedMins   = getBedtimeMinutes();
       const startMins = getStartMinutes();
 
-      // 総活動時間 (start → bed, 翌日にまたぐ場合も考慮)
       let totalMins = bedMins - startMins;
       if (totalMins <= 0) totalMins += 1440;
 
-      // 残り時間 (now → bed)
       let remainingMins = bedMins - nowMins;
       if (remainingMins < 0) remainingMins += 1440;
 
       const remainingSecs = remainingMins * 60 - nowSecs;
 
       if (remainingSecs <= 0) {
-        countdownEl.textContent = "00:00:00";
-        progressEl.style.width = "0%";
-        minutesLeftEl.textContent = "0";
-        percentLeftEl.textContent = "0%";
         document.body.innerHTML = `<p class="done-message">お疲れ様でした。今日も1440分を生き切った。</p>`;
         return;
       }
+
+      minutesLeftEl.textContent = remainingMins;
 
       const dispH = Math.floor(remainingSecs / 3600);
       const dispM = Math.floor((remainingSecs % 3600) / 60);
@@ -277,15 +372,14 @@
 
       const elapsedMins = totalMins - remainingMins;
       elapsedEl.textContent = elapsedMins > 0 ? elapsedMins : 0;
-      minutesLeftEl.textContent = remainingMins;
       percentLeftEl.textContent = Math.round(pct) + "%";
 
-      // 色
       const colorClass = pct <= 10 ? "danger" : pct <= 25 ? "warning" : "";
-      countdownEl.className = "countdown-time " + colorClass;
-      progressEl.className = "progress-bar " + colorClass;
+      minutesLeftEl.className = "minutes-value " + colorClass;
+      countdownEl.className   = "hms-value " + colorClass;
+      progressEl.className    = "progress-bar " + colorClass;
 
-      messageEl.textContent = getMessages(remainingMins);
+      messageEl.textContent = getMessage(remainingMins);
     }
 
     tick();

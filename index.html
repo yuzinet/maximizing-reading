@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>maximizing-reading</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
+      background: #0f0f0f;
+      color: #f0f0f0;
+      min-height: 100vh;
+      padding: 4rem 2rem;
+    }
+
+    header {
+      max-width: 720px;
+      margin: 0 auto 4rem;
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.6rem;
+    }
+
+    header p {
+      font-size: 0.9rem;
+      color: #666;
+      line-height: 1.7;
+    }
+
+    main {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      color: #444;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #1e1e1e;
+    }
+
+    .tool-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .tool-card {
+      display: block;
+      text-decoration: none;
+      background: #141414;
+      border: 1px solid #1e1e1e;
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .tool-card:hover {
+      border-color: #333;
+      background: #181818;
+    }
+
+    .tool-card-inner {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.25rem;
+    }
+
+    .tool-book {
+      font-size: 0.72rem;
+      color: #555;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+      padding-top: 0.2rem;
+      min-width: 0;
+    }
+
+    .tool-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .tool-name {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #e8e8e8;
+      margin-bottom: 0.3rem;
+    }
+
+    .tool-desc {
+      font-size: 0.82rem;
+      color: #555;
+      line-height: 1.5;
+    }
+
+    .tool-arrow {
+      color: #333;
+      font-size: 1rem;
+      align-self: center;
+      flex-shrink: 0;
+    }
+
+    footer {
+      max-width: 720px;
+      margin: 4rem auto 0;
+      font-size: 0.75rem;
+      color: #333;
+    }
+
+    footer a {
+      color: #444;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>maximizing-reading</h1>
+    <p>読書の効果を最大化するためのWebツール集。本から得た知識を行動に変えるために。</p>
+  </header>
+
+  <main>
+    <div class="section-title">Tools</div>
+
+    <div class="tool-list">
+
+      <a class="tool-card" href="tools/1440-minutes/index.html">
+        <div class="tool-card-inner">
+          <div class="tool-book">1440分の使い方</div>
+          <div class="tool-info">
+            <div class="tool-name">今日の残り時間カウントダウン</div>
+            <div class="tool-desc">就寝時刻を設定すると、今日使える残り分数をリアルタイムで表示。時間を意識することで行動を変える。</div>
+          </div>
+          <div class="tool-arrow">›</div>
+        </div>
+      </a>
+
+    </div>
+  </main>
+
+  <footer>
+    <a href="https://github.com/yuzinet/maximizing-reading" target="_blank" rel="noopener">GitHub</a>
+  </footer>
+
+</body>
+</html>
